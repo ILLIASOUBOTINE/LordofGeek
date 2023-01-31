@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-
+// var_dump($_SESSION);
 
 // Pour afficher les erreurs PHP
 error_reporting(E_ALL);
@@ -32,8 +32,11 @@ switch ($uc) {
     case 'commander':
         include 'App/controleur/c_passerCommande.php';
         break;
-    case 'administrer' :
+    case 'compte' :
         include 'App/controleur/c_monCompte.php';
+        break;
+    case 'accueil' :
+        include 'App/controleur/c_homePage.php';
         break;
     default:
         break;
@@ -41,4 +44,3 @@ switch ($uc) {
 
 
 include("App/vue/template.php");
-

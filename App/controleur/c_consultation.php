@@ -7,7 +7,12 @@ include 'App/modele/M_exemplaire.php';
  * @author Loic LOG
  */
 switch ($action) {
+    case 'voirCategories' :
+        $lesJeux = M_Exemplaire::trouveToutesJoue();
+        curentCategorieAll();
+        break;
     case 'voirJeux' :
+        supprimecurentCategorieAll();
         $categorie = filter_input(INPUT_GET, 'categorie');
         $lesJeux = M_Exemplaire::trouveLesJeuxDeCategorie($categorie);
         break;
@@ -19,11 +24,18 @@ switch ($action) {
         } else {
             afficheMessage("Ce jeu a été ajouté");
         }
-        $lesJeux = M_Exemplaire::trouveLesJeuxDeCategorie($categorie);
+        if (curentCategorieAll()) {
+            $lesJeux = M_Exemplaire::trouveToutesJoue();
+        }else {
+           $lesJeux = M_Exemplaire::trouveLesJeuxDeCategorie($categorie);
+        }
+        
         break;
+    
     default:
         $lesJeux = [];
         break;
 }
 
-$lesCategories = M_Categorie::trouveLesCategories();
+// $lesCategories = M_Categorie::trouveLesCategories();
+$lesCategories = M_Categorie::trouveLesCategoriesNotNull();

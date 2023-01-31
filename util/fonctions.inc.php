@@ -84,9 +84,9 @@ function retirerDuPanier($idProduit) {
 function afficheErreurs(array $msgErreurs) {
     echo '﻿<div class="erreur"><ul>';
     foreach ($msgErreurs as $erreur) {
-        ?>     
-        <li><?php echo $erreur ?></li>
-        <?php
+        ?>
+<li><?php echo $erreur ?></li>
+<?php
     }
     echo '</ul></div>';
 }
@@ -97,4 +97,82 @@ function afficheErreurs(array $msgErreurs) {
  */
 function afficheMessage(string $msg) {
     echo '﻿<div class="message">'.$msg.'</div>';
+}
+
+
+/**
+ * Initialise le panier
+ *
+ * Crée une variable de type session dans le cas
+ * où elle n'existe pas 
+ */
+function initClient($client) {
+    
+    $_SESSION['client'] = $client;
+    
+}
+
+/**
+ * 
+ */
+function getClient() {
+   
+    return $_SESSION['client'];
+    
+    
+}
+
+/**
+ * 
+ */
+function supprimerClient() {
+    unset($_SESSION['client']);
+}
+
+/**
+ * 
+ */
+function curentCategorieAll() {
+    $_SESSION['isAll'] = true;
+    return  $_SESSION['isAll'];
+}
+
+function supprimecurentCategorieAll() {
+    unset($_SESSION['isAll']);
+}
+
+
+
+
+
+/**
+ *  
+ */
+function initCommandeClient($commande) {
+    $_SESSION['commandes'] = $commande;
+   
+    
+    
+}
+
+/**
+ *
+ */
+function supprimerCommandeClient() {
+    unset($_SESSION['commandes']);
+}
+
+
+/**
+ *
+ */
+function getCommandesClient() {
+    $commande = M_Commande::getCommandeParClient($_SESSION['client']['id']);
+    $newCommande = array();
+    foreach($commande as $comm){
+    $exemplaires = M_Commande::getExemplaireParCommande($comm['id']);
+    $comm['exemplaires'] = $exemplaires;
+    $newCommande[] = $comm;
+    }
+    return $newCommande;
 }

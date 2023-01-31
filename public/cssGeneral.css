@@ -93,7 +93,15 @@ header img{
     height: auto;
 }
 
+.jeux_panier {
+    display: flex;
+    align-items: center;
+    padding-bottom: 20px;
+}
 
+.jeux_panier > img {
+  margin: auto 20px;
+}
 
 /* ---------- Formulaire ----------------------------------------------------*/
 
@@ -131,3 +139,22 @@ input[type="submit"]
     width: 30%;
 }
 
+/* ***              accueil               */
+.block {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 20px;
+}
+
+
+.img_accueil {
+    width: 200px;
+    height: 200px;
+}
+
+.border_ul {
+    /* display: inline-block; */
+    border: dotted  2px;
+    margin-bottom: 5px;
+}

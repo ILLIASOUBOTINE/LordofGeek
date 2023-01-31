@@ -19,15 +19,23 @@ class M_Commande {
      * @param $ville
      * @param $mail
      * @param $listJeux
+     * @param $clientId = null
 
      */
-    public static function creerCommande($nom, $rue, $cp, $ville, $mail, $listJeux) {
-        $req = "insert into commandes(nomPrenomClient, adresseRueClient, cpClient, villeClient, mailClient) values ('$nom','$rue','$cp','$ville','$mail')";
-        $res = AccesDonnees::exec($req);
+    public static function creerCommande($nom, $rue, $cp, $ville, $mail, $listJeux, $clientId = null) {
+        // $req = "insert into commandes(nomPrenom, adresseRueClient, cpClient, villeClient, mailClient) values ('$nom','$rue','$cp','$ville','$mail')";
+        // $res = AccesDonnees::exec($req);
+        $req = "insert into commandes(nomPrenom, adresseRueClient, cpClient, villeClient, mailClient, client_id) values (?,?,?,?,?,?)";
+        $options = [$nom, $rue, $cp, $ville, $mail, $clientId];
+        $res = AccesDonnees::ecritureProteger($req, $options);
+        // var_dump($res);
         $idCommande = AccesDonnees::getPdo()->lastInsertId();
         foreach ($listJeux as $jeu) {
-            $req = "insert into lignes_commande(commande_id, exemplaire_id) values ('$idCommande','$jeu')";
-            $res = AccesDonnees::exec($req);
+            // $req = "insert into lignes_commande(commande_id, exemplaire_id) values ('$idCommande','$jeu')";
+            // $res = AccesDonnees::exec($req);
+            $req = "insert into lignes_commande(commande_id, exemplaire_id) values (?,?)";
+            $options = [$idCommande, $jeu];
+            $res = AccesDonnees::ecritureProteger($req, $options);
         }
     }
 
@@ -60,10 +68,44 @@ class M_Commande {
         }
         if ($mail == "") {
             $erreurs[] = "Il faut saisir le champ mail";
-        } else if (!estUnMail($mail)) {
+        }else if (!estUnMail($mail)) {
             $erreurs[] = "erreur de mail";
         }
         return $erreurs;
+    }
+
+
+
+    /**
+
+
+     */
+    public static function getCommandeParClient($clientId) {
+      
+        $req = "SELECT * FROM commandes where commandes.client_id = ?";
+        $options = [$clientId];
+        $res = AccesDonnees::queryProteger($req, $options);
+        // var_dump($res);
+        $commandClient = $res->fetchAll(PDO::FETCH_ASSOC);
+        // var_dump($commandClient);
+        return  $commandClient;
+    }
+
+     /**
+
+
+     */
+    public static function getExemplaireParCommande($commandeId) {
+      
+        $req = "SELECT exemplaires.* FROM lignes_commande 
+        join exemplaires on exemplaire_id = exemplaires.id 
+        where commande_id = ?";
+        $options = [$commandeId];
+        $res = AccesDonnees::queryProteger($req, $options);
+        // var_dump($res);
+        $commandClient = $res->fetchAll(PDO::FETCH_ASSOC);
+        // var_dump($commandClient);
+        return  $commandClient;
     }
 
 }

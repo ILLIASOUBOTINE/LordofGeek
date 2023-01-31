@@ -17,7 +17,7 @@
  */
 class AccesDonnees {
 
-    private static $serveur = 'mysql:host=localhost';
+    private static $serveur = 'mysql:host=localhost:3360';
     private static $bdd = 'dbname=ma_base_jeux';
     private static $user = 'root';
     private static $mdp = '';
@@ -57,6 +57,56 @@ class AccesDonnees {
      */
     public static function exec(string $requete_sql) {
         return AccesDonnees::getPdo()->exec($requete_sql);
+    }
+
+    /**
+     * Exécution d'une requete de lecture
+     * @param string $requete_sql
+     * @return PDOStatement
+     */
+    public static function queryProteger(string $requete_sql, array $options = array()) {
+        $res = AccesDonnees::getPdo()->prepare($requete_sql);
+        if (empty($options)) {
+          
+            $res->execute();
+            
+        }else {
+             $res->execute($options);
+        }
+          
+         return $res;
+    }
+
+
+    /**
+     * Exécution d'une requete de lecture
+     * @param string $requete_sql
+     * @return PDOStatement
+     */
+    public static function queryProtegerAssositiv(string $requete_sql, array $options = array()) {
+        $res = AccesDonnees::getPdo()->prepare($requete_sql);
+        if (!empty($options)) {
+             foreach ($options as $key => $value) {
+                $res->bindValue(':'.$key, $value);
+            }
+        }
+          
+        $res->execute();
+        return $res;
+    }
+    
+    
+    /**
+     * Exécution d'une requete de lecture
+     * @param string $requete_sql
+     * @return PDOStatement
+     */
+    public static function ecritureProteger(string $requete_sql,  $options = []) {
+        if (empty($options)) {
+           return AccesDonnees::getPdo()->prepare($requete_sql)->execute();
+        }else {
+            return AccesDonnees::getPdo()->prepare($requete_sql)->execute($options);
+        }
     }
 
 }
